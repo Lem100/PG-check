@@ -4,24 +4,43 @@
 	 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	 <title>Stephan Lempert - Test Site</title>
 	 <style>
-		 html
+		 body
 		 {
-		     background-color: #413428;
+		     background-color: #413428;	     
 		     margin: 0px;
 		     padding: 0px;
-			 background: url(welcome.jpg) no-repeat center center fixed; 
-			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			-o-background-size: cover;
-			background-size: cover;
-		 } 
+		 }
+		     
+	#bg {
+	  position: fixed; 
+	  top: -50%; 
+	  left: -50%; 
+	  width: 200%; 
+	  height: 200%;
+	   -webkit-backface-visibility: hidden;
+	}
+	#bg img {
+	  position: absolute; 
+	  top: 0; 
+	  left: 0; 
+	  right: 0; 
+	  bottom: 0; 
+	  margin: auto; 
+	  min-width: 50%;
+	  min-height: 50%;
+	   -webkit-backface-visibility: hidden;
+	}		 
 	</style>
 
     <script src="phonegap.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="js/jquery.transit.js"></script>
+
     <script>
 
     // The watch id references the current `watchAcceleration`
-    var watchID = null;
+    var watchID = null, old_z = null;
+    
 
     // Wait for PhoneGap to load
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -35,7 +54,7 @@
     function startWatch() {
 
         // Update acceleration every 3 seconds
-        var options = { frequency: 3000 };
+        var options = { frequency: 500 };
 
         watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
     }
@@ -50,11 +69,22 @@
 
     // onSuccess: Get a snapshot of the current acceleration
     function onSuccess(acceleration) {
-        var element = document.getElementById('accelerometer');
-        element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-                            'Acceleration Y: ' + acceleration.y + '<br />' +
-                            'Acceleration Z: ' + acceleration.z + '<br />' +
-                            'Timestamp: '      + acceleration.timestamp + '<br />';
+    
+        var element = document.getElementById('accelerometer'),
+        	treshold = 7.5;
+        	z = acceleration.z;
+        
+        element.innerHTML = "";
+        element.innerHTML = 'Acceleration Z: ' + z + '<br />'
+        
+        if ((old_z === null || old_z <= treshold) && z > treshold) {
+	        $("#bg img").transition({ queue: false, scale: 5 }, 2000 , 'in-out');
+        }
+        if ((old_z === null || (old_z > treshold) && z < treshold) {
+	         $("#bg img").transition({ queue: false, scale: 1 }, 2000 , 'in-out');
+        }
+        
+        z = old_z;
     }
 
     // onError: Failed to get the acceleration
@@ -66,6 +96,10 @@
 </head>
 
 <body> 
+	<div id="bg">
+		<img src="welcome.jpg">
+	</div>
     <div id="accelerometer">Waiting for accelerometer...</div>
+    
 </body>
 </html>
