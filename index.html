@@ -20,18 +20,6 @@
 			left:0;
 			max-width: none;
 		}
-
-
-	/*#bg img {
-	  position: absolute; 
-	  top: 0; 
-	  left: 0; 
-	  right: 0; 
-	  bottom: 0; 
-	  margin: auto; 
-	  min-width: 50%;
-	  height:auto;
-	}	*/	 
 	</style>
 
     <script src="phonegap.js"></script>
@@ -77,10 +65,10 @@
         element.innerHTML = "";
         element.innerHTML = 'Acceleration Z: ' + z + '<br />'
         
-        if ((old_z === null || old_z <= treshold) && z > treshold) {
+        if ((old_z === null || old_z > treshold) && z > treshold) {
 	        $("#bg").transition({ queue: false, scale: 5 }, 2000 , 'in-out');
         }
-        if ((old_z === null || old_z > treshold) && z < treshold) {
+        if ((old_z === null || old_z <= treshold) && z < treshold) {
 	         $("#bg").transition({ queue: false, scale: 1 }, 2000 , 'in-out');
         }
         
